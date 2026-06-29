@@ -1,127 +1,49 @@
 const Product = require('../models/Product');
 
-// @desc    Fetch all products
-// @route   GET /api/products
-// @access  Public
-const getProducts = async (req, res) => {
-  try {
-    const keyword = req.query.keyword
-      ? {
-          name: {
-            $regex: req.query.keyword,
-            $options: 'i',
-          },
-        }
-      : {};
-
-    // For filtering by category
-    const category = req.query.category ? { category: req.query.category } : {};
-
-    const products = await Product.find({ ...keyword, ...category }).populate(
-      'category',
-      'name'
-    );
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// GET /api/products
+exports.getProducts = async (req, res) => {
+  const keyword = req.query.keyword
+    ? { name: { $regex: req.query.keyword, $options: 'i' } }
+    : {};
+  const products = await Product.find({ ...keyword }).populate('category', 'name');
+  res.json(products);
 };
 
-// @desc    Fetch single product
-// @route   GET /api/products/:id
-// @access  Public
-const getProductById = async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id).populate(
-      'category',
-      'name'
-    );
-
-    if (product) {
-      res.json(product);
-    } else {
-      res.status(404).json({ message: 'Product not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// GET /api/products/:id
+exports.getProductById = async (req, res) => {
+  const product = await Product.findById(req.params.id).populate('category', 'name');
+  if (!product) return res.status(404).json({ message: 'Product not found' });
+  res.json(product);
 };
 
-// @desc    Create a product
-// @route   POST /api/products
-// @access  Private/Admin
-const createProduct = async (req, res) => {
+// POST /api/products  (admin)
+exports.createProduct = async (req, res) => {
   try {
-    const product = new Product({
-      name: 'Sample name',
-      price: 0,
+    const { name, price, image, brand, category, countInStock, description } = req.body;
+    const product = await Product.create({
       user: req.user._id,
-      image: 'no-photo.jpg',
-      brand: 'Sample brand',
-      category: req.body.category || '60c72b2f9b1d8b2a4c8e1a1e', // Replace with valid category id if not provided, though it's required
-      countInStock: 0,
-      numReviews: 0,
-      description: 'Sample description',
+      name, price, image: image || 'no-photo.jpg',
+      brand, category, countInStock, description,
     });
-
-    const createdProduct = await product.save();
-    res.status(201).json(createdProduct);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(201).json(product);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 };
 
-// @desc    Update a product
-// @route   PUT /api/products/:id
-// @access  Private/Admin
-const updateProduct = async (req, res) => {
-  try {
-    const { name, price, description, image, brand, category, countInStock } =
-      req.body;
-
-    const product = await Product.findById(req.params.id);
-
-    if (product) {
-      product.name = name || product.name;
-      product.price = price || product.price;
-      product.description = description || product.description;
-      product.image = image || product.image;
-      product.brand = brand || product.brand;
-      product.category = category || product.category;
-      product.countInStock = countInStock || product.countInStock;
-
-      const updatedProduct = await product.save();
-      res.json(updatedProduct);
-    } else {
-      res.status(404).json({ message: 'Product not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// PUT /api/products/:id  (admin)
+exports.updateProduct = async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) return res.status(404).json({ message: 'Product not found' });
+  Object.assign(product, req.body);
+  const updated = await product.save();
+  res.json(updated);
 };
 
-// @desc    Delete a product
-// @route   DELETE /api/products/:id
-// @access  Private/Admin
-const deleteProduct = async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-
-    if (product) {
-      await Product.deleteOne({ _id: product._id });
-      res.json({ message: 'Product removed' });
-    } else {
-      res.status(404).json({ message: 'Product not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-module.exports = {
-  getProducts,
-  getProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct,
+// DELETE /api/products/:id  (admin)
+exports.deleteProduct = async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) return res.status(404).json({ message: 'Product not found' });
+  await product.deleteOne();
+  res.json({ message: 'Product removed' });
 };

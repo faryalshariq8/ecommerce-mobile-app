@@ -1,0 +1,17 @@
+node_modules/
+**/node_modules/
+
+backend/.env
+.env
+**/.env
+
+.vscode/
+
+.expo/
+**/.expo/
+
+android/app/build/
+**/android/app/build/
+
+*.log
+.vscode/
