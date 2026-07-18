@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
     fontWeight: 'bold',
-    marginHorizontal: 24,
-    marginTop: 12,
+    marginHorizontal: 20,
+    marginTop: 16,
     marginBottom: 20,
   },
   listContainer: {

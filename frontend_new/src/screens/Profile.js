@@ -87,7 +87,13 @@ const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
   container: { flex: 1, padding: 20 },
-  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 15 },
+  header: {
+    fontSize: 24,
+    fontWeight: '600',
+    marginTop: 16,
+    marginHorizontal: 20,
+    marginBottom: 15,
+  },
   card: { padding: 20, borderRadius: 10, marginBottom: 20 },
   name: { fontSize: 22, fontWeight: 'bold' },
   row: { padding: 16, borderRadius: 8, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },

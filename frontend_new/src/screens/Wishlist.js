@@ -41,7 +41,9 @@ const Wishlist = ({ navigation }) => {
         <Text style={[styles.header, { color: colors.text }]}>My Wishlist</Text>
         {wishlistItems.length === 0 ? (
           <View style={styles.center}>
-            <Text style={[styles.emptyText, { color: colors.muted }]}>Your wishlist is empty.</Text>
+            <Text style={[styles.emptyIcon, { color: colors.primary }]}>♡</Text>
+            <Text style={[styles.emptyText, { color: colors.text }]}>Your wishlist is empty</Text>
+            <Text style={[styles.emptySubtext, { color: colors.muted }]}>Browse our latest posters</Text>
           </View>
         ) : (
           <FlatList
@@ -82,8 +84,10 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1 },
   container: { flex: 1, paddingHorizontal: 20 },
   header: { fontSize: 28, fontWeight: 'bold', marginVertical: 20 },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  emptyText: { fontSize: 16, fontStyle: 'italic' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 36 },
+  emptyIcon: { fontSize: 42, marginBottom: 12 },
+  emptyText: { fontSize: 20, fontWeight: '700', marginBottom: 8, textAlign: 'center' },
+  emptySubtext: { fontSize: 15, textAlign: 'center' },
   list: { paddingBottom: 40 },
   card: { flexDirection: 'row', padding: 12, borderRadius: 12, borderWidth: 1, marginBottom: 15 },
   image: { width: 80, height: 80, borderRadius: 8, marginRight: 15 },

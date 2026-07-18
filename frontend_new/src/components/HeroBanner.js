@@ -5,74 +5,80 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
+  ImageBackground,
 } from "react-native";
 
 import { useThemeStore } from "../store/themeStore";
+import { getProductImage } from "../utils/imageHelper";
 
-export default function HeroBanner({ navigation }) {
+export default function HeroBanner({ navigation, featuredPoster }) {
   const { colors } = useThemeStore();
+  const backgroundImage = featuredPoster ? getProductImage(featuredPoster.image) : null;
 
   return (
-    <View
+    <ImageBackground
+      source={backgroundImage}
       style={[
         styles.banner,
         {
-          backgroundColor: colors.primary,
           shadowColor: colors.primary,
         },
       ]}
+      imageStyle={styles.bannerImage}
+      resizeMode="cover"
     >
-      <Text style={styles.small}>
-        LIMITED COLLECTION
-      </Text>
+      <View style={styles.overlay} />
 
-      <Text style={styles.title}>
-        Curated{"\n"}Wall Art
-      </Text>
+      <View style={styles.content}>
+        <Text style={styles.small}>LIMITED COLLECTION</Text>
 
-      <Text style={styles.subtitle}>
-        Elevate your living space with museum-quality posters.
-      </Text>
+        <Text style={styles.title}>Curated{"\n"}Wall Art</Text>
 
-      <TouchableOpacity
+        <Text style={styles.subtitle}>
+          Elevate your living space with museum-quality posters.
+        </Text>
+
+        <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate("Categories")}
-      >
-        <Text
-          style={[
-            styles.buttonText,
-            {
-              color: colors.primary,
-            },
-          ]}
         >
-          Browse Collection
-        </Text>
-      </TouchableOpacity>
-    </View>
+          <Text style={[styles.buttonText, { color: colors.primary }]}>Browse Collection</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   banner: {
     borderRadius: 24,
-    padding: 24,
     marginTop: 24,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
+    overflow: "hidden",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.18,
+    shadowRadius: 20,
     elevation: 4,
   },
+  bannerImage: {
+    opacity: 0.42,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(11, 11, 11, 0.32)",
+  },
+  content: {
+    padding: 24,
+  },
   small: {
-    color: "rgba(255, 255, 255, 0.8)",
+    color: "rgba(255, 255, 255, 0.92)",
     fontWeight: "700",
     fontSize: 11,
     letterSpacing: 2,
   },
   title: {
     fontSize: 36,
-    fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
-    fontWeight: "bold",
+    fontFamily: Platform.OS === "ios" ? "System" : "sans-serif",
+    fontWeight: "600",
     color: "white",
     marginTop: 8,
     lineHeight: 42,
@@ -80,7 +86,7 @@ const styles = StyleSheet.create({
   subtitle: {
     marginTop: 8,
     fontSize: 14,
-    color: "rgba(255, 255, 255, 0.85)",
+    color: "rgba(255, 255, 255, 0.92)",
     lineHeight: 20,
     maxWidth: "85%",
   },

@@ -4,20 +4,19 @@ import { Ionicons } from "@expo/vector-icons";
 import { useThemeStore } from "../store/themeStore";
 
 export default function SearchBar({ value, onChangeText }) {
-  const { colors } = useThemeStore();
-
-  const isLight = colors.background === '#FAF6EE';
+  const { mode, colors } = useThemeStore();
+  const isLight = mode === "light";
 
   return (
     <View
       style={[
         styles.container,
         {
-          backgroundColor: isLight 
-            ? "rgba(255, 255, 255, 0.75)" 
+          backgroundColor: isLight
+            ? colors.surface
             : "rgba(30, 30, 30, 0.75)",
-          borderColor: isLight 
-            ? "rgba(234, 229, 217, 0.6)" 
+          borderColor: isLight
+            ? colors.border
             : "rgba(255, 255, 255, 0.1)",
           shadowColor: colors.shadow,
         },
@@ -26,7 +25,7 @@ export default function SearchBar({ value, onChangeText }) {
       <Ionicons
         name="search"
         size={18}
-        color={colors.text2}
+        color={colors.primary}
       />
 
       <TextInput

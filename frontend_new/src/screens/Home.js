@@ -127,7 +127,7 @@ export default function Home({ navigation }) {
 
           <SearchBar value={search} onChangeText={setSearch} />
 
-          <HeroBanner navigation={navigation} />
+          <HeroBanner navigation={navigation} featuredPoster={products[0]} />
 
           <Text style={[styles.heading, { color: colors.text }]}>
             Categories
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 22,
-    paddingTop: 12,
+    paddingTop: 18,
   },
   center: {
     flex: 1,
@@ -246,14 +246,14 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
     fontWeight: "bold",
-    marginTop: 35,
-    marginBottom: 16,
+    marginTop: 28,
+    marginBottom: 14,
   },
   chipScroll: {
     flexDirection: "row",
     marginHorizontal: -22,
     paddingHorizontal: 22,
-    marginBottom: 8,
+    marginBottom: 0,
   },
   cardScroll: {
     marginHorizontal: -22,

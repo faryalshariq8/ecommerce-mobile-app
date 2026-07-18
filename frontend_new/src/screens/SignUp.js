@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 36,
-    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
-    fontWeight: 'bold',
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
+    fontWeight: '500',
     marginBottom: 40,
     textAlign: 'center',
   },

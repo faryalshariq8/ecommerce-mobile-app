@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Alert } from "react-native";
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Animated } from "react-native";
 import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
@@ -14,6 +14,7 @@ const ProductDetails = ({ route, navigation }) => {
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const heartScale = useRef(new Animated.Value(1)).current;
 
   const { addToCart } = useCartStore();
 
@@ -45,8 +46,24 @@ const ProductDetails = ({ route, navigation }) => {
   product &&
   wishlistItems.some((item) => item._id === product._id);
 
+  const animateHeart = () => {
+    Animated.sequence([
+      Animated.timing(heartScale, {
+        toValue: 1.2,
+        duration: 110,
+        useNativeDriver: true,
+      }),
+      Animated.timing(heartScale, {
+        toValue: 1,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
   const handleWishlist = async () => {
     try {
+      animateHeart();
       if (isWishlisted) {
         await removeFromWishlist(product._id);
       } else {
@@ -123,11 +140,13 @@ const ProductDetails = ({ route, navigation }) => {
           style={styles.heartButton}
           onPress={handleWishlist}
         >
-          <Ionicons
-            name={isWishlisted ? "heart" : "heart-outline"}
-            size={28}
-            color="red"
-          />
+          <Animated.View style={{ transform: [{ scale: heartScale }] }}>
+            <Ionicons
+              name={isWishlisted ? "heart" : "heart-outline"}
+              size={28}
+              color="red"
+            />
+          </Animated.View>
         </TouchableOpacity>
       </View>
       
@@ -137,16 +156,21 @@ const ProductDetails = ({ route, navigation }) => {
         
         <View style={styles.ratingRow}>
           <Ionicons name="star" size={16} color="#FBBF24" />
+          <Ionicons name="star" size={16} color="#FBBF24" />
+          <Ionicons name="star" size={16} color="#FBBF24" />
+          <Ionicons name="star" size={16} color="#FBBF24" />
+          <Ionicons name="star-half" size={16} color="#FBBF24" />
           <Text style={[styles.ratingText, { color: colors.text }]}>
             {product.rating || "4.8"} ({product.numReviews || "120"} reviews)
           </Text>
-          <View style={styles.badgeDivider} />
-          <Text style={[styles.stockText, { color: product.countInStock > 0 ? colors.success : colors.danger }]}>
-            {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
-          </Text>
         </View>
 
-        <Text style={[styles.price, { color: colors.primary }]}>${product.price}</Text>
+        <View style={styles.metaRow}>
+          <View style={[styles.stockBadge, { backgroundColor: product.countInStock > 0 ? colors.primary : colors.danger }]}>
+            <Text style={styles.stockBadgeText}>{product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}</Text>
+          </View>
+          <Text style={[styles.price, { color: colors.primary }]}>${product.price}</Text>
+        </View>
         
         <Text style={[styles.descriptionHeader, { color: colors.text }]}>The Story</Text>
         <Text style={[styles.description, { color: colors.text2 }]}>{product.description}</Text>
@@ -182,11 +206,13 @@ const styles = StyleSheet.create({
   imageContainer: {
     position: 'relative',
     width: '100%',
-    height: 420,
+    height: 460,
   },
   image: {
     width: '100%',
     height: '100%',
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
   },
   backButton: {
     position: 'absolute',
@@ -242,27 +268,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
+    flexWrap: 'wrap',
   },
   ratingText: {
     fontSize: 14,
-    marginLeft: 6,
+    marginLeft: 8,
     fontWeight: '500',
   },
-  badgeDivider: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#9CA3AF',
-    marginHorizontal: 10,
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 24,
   },
-  stockText: {
-    fontSize: 14,
-    fontWeight: '600',
+  stockBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  stockBadgeText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   price: {
-    fontSize: 26,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 24,
   },
   descriptionHeader: {
     fontSize: 16,
@@ -277,15 +310,15 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   button: {
-    height: 56,
-    borderRadius: 28,
+    height: 60,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 10,
-    elevation: 3,
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 12,
+    elevation: 4,
   },
   buttonDisabled: {
     opacity: 0.5,

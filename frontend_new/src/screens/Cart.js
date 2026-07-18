@@ -86,7 +86,11 @@ const Cart = ({ navigation }) => {
         <Text style={[styles.header, { color: colors.text }]}>Shopping Cart</Text>
         
         {cart?.items?.length === 0 ? (
-          <Text style={[styles.emptyText, { color: colors.muted }]}>Your cart is empty.</Text>
+          <View style={styles.emptyState}>
+            <Text style={[styles.emptyIcon, { color: colors.primary }]}>🛒</Text>
+            <Text style={[styles.emptyText, { color: colors.text }]}>Your cart is empty</Text>
+            <Text style={[styles.emptySubtext, { color: colors.muted }]}>Browse our latest posters</Text>
+          </View>
         ) : (
           <>
             <FlatList
@@ -108,7 +112,10 @@ const Cart = ({ navigation }) => {
                 ]}
             >
               <Text style={[styles.totalText, { color: colors.text }]}>Total: ${totalAmount}</Text>
-              <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
+              <TouchableOpacity
+                style={[styles.checkoutButton, { backgroundColor: colors.primary }]}
+                onPress={handleCheckout}
+              >
                 <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
               </TouchableOpacity>
             </View>
@@ -129,8 +136,10 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
-    margin: 15,
+    fontWeight: '600',
+    marginTop: 16,
+    marginHorizontal: 20,
+    marginBottom: 12,
     color: '#333',
   },
   listContainer: {
@@ -176,11 +185,25 @@ const styles = StyleSheet.create({
     color: 'red',
     fontWeight: 'bold',
   },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  emptyIcon: {
+    fontSize: 42,
+    marginBottom: 12,
+  },
   emptyText: {
-    fontSize: 18,
+    fontSize: 20,
     textAlign: 'center',
-    marginTop: 50,
-    color: '#666',
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  emptySubtext: {
+    fontSize: 15,
+    textAlign: 'center',
   },
   quantityRow: {
     flexDirection: "row",
@@ -222,14 +245,16 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   checkoutButton: {
-    backgroundColor: '#208AEF',
-    padding: 15,
-    borderRadius: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    borderRadius: 18,
     alignItems: 'center',
+    minHeight: 52,
+    justifyContent: 'center',
   },
   checkoutButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 'bold',
   },
 });
