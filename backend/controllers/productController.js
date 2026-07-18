@@ -2,10 +2,14 @@ const Product = require('../models/Product');
 
 // GET /api/products
 exports.getProducts = async (req, res) => {
-  const keyword = req.query.keyword
-    ? { name: { $regex: req.query.keyword, $options: 'i' } }
-    : {};
-  const products = await Product.find({ ...keyword }).populate('category', 'name');
+  const query = {};
+  if (req.query.keyword) {
+    query.name = { $regex: req.query.keyword, $options: 'i' };
+  }
+  if (req.query.category) {
+    query.category = req.query.category;
+  }
+  const products = await Product.find(query).populate('category', 'name');
   res.json(products);
 };
 

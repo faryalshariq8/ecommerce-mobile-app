@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, Platform } from 'react-native';
+import { useThemeStore } from '../store/themeStore';
 
 const Splash = ({ navigation }) => {
+  const { colors } = useThemeStore();
+
   useEffect(() => {
     // Navigate to Onboarding after 2 seconds
     const timer = setTimeout(() => {
@@ -12,8 +15,13 @@ const Splash = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>E-Commerce App</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar barStyle={colors.background === '#FAF6EE' ? 'dark-content' : 'light-content'} />
+      <View style={styles.brandingContainer}>
+        <Text style={[styles.brandText, { color: colors.text }]}>PosterHaus</Text>
+        <View style={[styles.divider, { backgroundColor: colors.primary }]} />
+        <Text style={[styles.subText, { color: colors.text2 }]}>CURATED ART GALLERY</Text>
+      </View>
     </View>
   );
 };
@@ -23,12 +31,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#208AEF',
   },
-  text: {
-    fontSize: 32,
+  brandingContainer: {
+    alignItems: 'center',
+  },
+  brandText: {
+    fontSize: 42,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
     fontWeight: 'bold',
-    color: '#fff',
+    letterSpacing: 2,
+  },
+  divider: {
+    width: 40,
+    height: 2,
+    marginVertical: 12,
+  },
+  subText: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 4,
   },
 });
 

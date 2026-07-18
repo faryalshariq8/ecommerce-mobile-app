@@ -1,39 +1,55 @@
-import { create } from 'zustand';
+import { create } from "zustand";
+import api from "../services/api";
 
-export const useCartStore = create((set, get) => ({
-  cartItems: [],
-  
-  addToCart: (product, qty) => {
-    const item = {
-      product: product._id,
-      name: product.name,
-      image: product.image,
-      price: product.price,
-      countInStock: product.countInStock,
-      qty,
-    };
-    
-    set((state) => {
-      const existItem = state.cartItems.find((x) => x.product === item.product);
-      if (existItem) {
-        return {
-          cartItems: state.cartItems.map((x) =>
-            x.product === existItem.product ? item : x
-          ),
-        };
-      } else {
-        return { cartItems: [...state.cartItems, item] };
-      }
+export const useCartStore = create((set) => ({
+  cart: null,
+  loading: false,
+
+  fetchCart: async () => {
+    const { data } = await api.get("/cart");
+
+    set({
+      cart: data,
     });
   },
 
-  removeFromCart: (id) => {
+  addToCart: async (productId) => {
+    const { data } = await api.post("/cart/add", {
+      productId,
+      quantity: 1,
+    });
+
+    set({
+      cart: data,
+    });
+  },
+
+  updateQuantity: async (productId, quantity) => {
+    const { data } = await api.put("/cart/update", {
+      productId,
+      quantity,
+    });
+
+    set({
+      cart: data,
+    });
+  },
+
+  removeItem: async (productId) => {
+    const { data } = await api.delete("/cart/remove", {
+      data: {
+        productId,
+      },
+    });
+
+    set({
+      cart: data,
+    });
+  },
+
+  clearCart: () => {
     set((state) => ({
-      cartItems: state.cartItems.filter((x) => x.product !== id),
+      cart: state.cart ? { ...state.cart, items: [] } : null,
     }));
   },
-  
-  clearCart: () => {
-    set({ cartItems: [] });
-  }
 }));

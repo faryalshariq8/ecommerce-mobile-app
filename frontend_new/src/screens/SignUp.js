@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 
 const SignUp = ({ navigation }) => {
+  const { colors } = useThemeStore();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,21 +17,23 @@ const SignUp = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Account</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}> 
+      <Text style={[styles.title, { color: colors.text }]}>Create Account</Text>
       
       {error && <Text style={styles.errorText}>{error}</Text>}
       
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, color: colors.text, borderColor: colors.border }]}
         placeholder="Full Name"
+        placeholderTextColor={colors.text2}
         value={name}
         onChangeText={setName}
       />
       
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, color: colors.text, borderColor: colors.border }]}
         placeholder="Email"
+        placeholderTextColor={colors.text2}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -37,14 +41,15 @@ const SignUp = ({ navigation }) => {
       />
       
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, color: colors.text, borderColor: colors.border }]}
         placeholder="Password"
+        placeholderTextColor={colors.text2}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
       
-      <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={isLoading}>
+      <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={handleRegister} disabled={isLoading}>
         {isLoading ? (
           <ActivityIndicator color="#fff" />
         ) : (
@@ -53,9 +58,9 @@ const SignUp = ({ navigation }) => {
       </TouchableOpacity>
       
       <View style={styles.loginContainer}>
-        <Text style={styles.text}>Already have an account? </Text>
+        <Text style={[styles.text, { color: colors.text2 }]}>Already have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.loginText}>Login</Text>
+          <Text style={[styles.loginText, { color: colors.primary }]}>Login</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -66,29 +71,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 24,
   },
   title: {
-    fontSize: 32,
+    fontSize: 36,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 40,
     textAlign: 'center',
-    color: '#333',
   },
   input: {
-    backgroundColor: '#f5f5f5',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 15,
+    padding: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+    marginBottom: 16,
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#208AEF',
-    padding: 15,
-    borderRadius: 8,
+    padding: 16,
+    borderRadius: 28,
     alignItems: 'center',
     marginTop: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 10,
+    elevation: 2,
   },
   buttonText: {
     color: '#fff',
@@ -98,15 +106,13 @@ const styles = StyleSheet.create({
   loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 24,
   },
   text: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 15,
   },
   loginText: {
-    fontSize: 16,
-    color: '#208AEF',
+    fontSize: 15,
     fontWeight: 'bold',
   },
   errorText: {

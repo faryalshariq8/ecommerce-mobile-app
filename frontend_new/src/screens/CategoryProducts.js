@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, StatusBar } from 'react-native';
 import api from '../services/api';
+import { useThemeStore } from '../store/themeStore';
+import PosterCard from '../components/PosterCard';
 
 const CategoryProducts = ({ route, navigation }) => {
   const { categoryId, name } = route.params;
+  const { colors } = useThemeStore();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,29 +27,32 @@ const CategoryProducts = ({ route, navigation }) => {
   }, [categoryId, name, navigation]);
 
   const renderProduct = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.productCard}
-      onPress={() => navigation.navigate('ProductDetails', { id: item._id })}
-    >
-      <View style={styles.productImagePlaceholder} />
-      <Text style={styles.productName} numberOfLines={2}>{item.name}</Text>
-      <Text style={styles.productPrice}>${item.price}</Text>
-    </TouchableOpacity>
+    <PosterCard 
+      poster={item} 
+      navigation={navigation} 
+    />
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}> 
+      <StatusBar barStyle={colors.background === '#FAF6EE' ? 'dark-content' : 'light-content'} />
       {loading ? (
-        <ActivityIndicator size="large" color="#208AEF" />
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
       ) : products.length === 0 ? (
-        <Text style={styles.emptyText}>No products found in this category.</Text>
+        <View style={styles.center}>
+          <Text style={[styles.emptyText, { color: colors.text2 }]}>No products found in this category.</Text>
+        </View>
       ) : (
         <FlatList
           data={products}
           keyExtractor={(item) => item._id}
           renderItem={renderProduct}
           numColumns={2}
+          columnWrapperStyle={styles.columnWrapper}
           contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </View>
@@ -56,46 +62,25 @@ const CategoryProducts = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    paddingTop: 10,
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
   },
   listContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 40,
   },
-  productCard: {
-    flex: 1,
-    backgroundColor: '#fff',
-    margin: 5,
-    borderRadius: 8,
-    padding: 10,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  productImagePlaceholder: {
-    width: '100%',
-    height: 120,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  productName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
-  },
-  productPrice: {
-    fontSize: 16,
-    color: '#208AEF',
-    fontWeight: 'bold',
+  columnWrapper: {
+    justifyContent: 'space-between',
   },
   emptyText: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
-    marginTop: 50,
-    color: '#666',
+    fontStyle: 'italic',
   }
 });
 

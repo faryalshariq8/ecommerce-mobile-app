@@ -1,71 +1,169 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Alert } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
-import { useCartStore } from '../store/cartStore';
+import { useCartStore } from "../store/cartStore";
+import { useWishlistStore } from "../store/wishlistStore";
+import { useThemeStore } from "../store/themeStore";
+import { getProductImage } from "../utils/imageHelper";
 
 const ProductDetails = ({ route, navigation }) => {
   const { id } = route.params;
+  const { colors } = useThemeStore();
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const { addToCart } = useCartStore();
 
+  const {
+    wishlistItems,
+    fetchWishlist,
+    addToWishlist,
+    removeFromWishlist,
+  } = useWishlistStore();
+
   useEffect(() => {
-    const fetchProductDetails = async () => {
+    const fetchData = async () => {
       try {
         const { data } = await api.get(`/products/${id}`);
         setProduct(data);
+
+        await fetchWishlist();
       } catch (error) {
-        console.error('Error fetching product details:', error);
+        console.log(error);
       } finally {
         setLoading(false);
       }
     };
-    fetchProductDetails();
+
+    fetchData();
   }, [id]);
 
-  const handleAddToCart = () => {
-    addToCart(product, 1);
-    navigation.navigate('MainTabs', { screen: 'Cart' });
+  const isWishlisted =
+  product &&
+  wishlistItems.some((item) => item._id === product._id);
+
+  const handleWishlist = async () => {
+    try {
+      if (isWishlisted) {
+        await removeFromWishlist(product._id);
+      } else {
+        await addToWishlist(product._id);
+      }
+
+      await fetchWishlist();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart(product._id);
+      Alert.alert(
+        "Added to Cart",
+        `${product.name} has been added to your cart.`,
+        [
+          {
+            text: "Continue Shopping",
+          },
+          {
+            text: "View Cart",
+            onPress: () =>
+              navigation.navigate("MainTabs", {
+                screen: "Cart",
+              }),
+          },
+        ]
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#208AEF" />
+      <View style={[styles.center, { backgroundColor: colors.background }]}> 
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   if (!product) {
     return (
-      <View style={styles.center}>
-        <Text>Product not found</Text>
+      <View style={[styles.center, { backgroundColor: colors.background }]}> 
+        <Text style={{ color: colors.text }}>Product not found</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.imagePlaceholder} />
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}> 
+      <View style={styles.imageContainer}>
+        <Image
+          source={getProductImage(product.image)}
+          style={styles.image}
+          resizeMode="cover"
+        />
+
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color={colors.text}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.heartButton}
+          onPress={handleWishlist}
+        >
+          <Ionicons
+            name={isWishlisted ? "heart" : "heart-outline"}
+            size={28}
+            color="red"
+          />
+        </TouchableOpacity>
+      </View>
       
-      <View style={styles.detailsContainer}>
-        <Text style={styles.name}>{product.name}</Text>
-        <Text style={styles.brand}>{product.brand}</Text>
-        <Text style={styles.price}>${product.price}</Text>
+      <View style={[styles.detailsContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.brand, { color: colors.text2 }]}>{product.brand || "PosterHaus Collection"}</Text>
+        <Text style={[styles.name, { color: colors.text }]}>{product.name}</Text>
         
-        <Text style={styles.descriptionHeader}>Description</Text>
-        <Text style={styles.description}>{product.description}</Text>
+        <View style={styles.ratingRow}>
+          <Ionicons name="star" size={16} color="#FBBF24" />
+          <Text style={[styles.ratingText, { color: colors.text }]}>
+            {product.rating || "4.8"} ({product.numReviews || "120"} reviews)
+          </Text>
+          <View style={styles.badgeDivider} />
+          <Text style={[styles.stockText, { color: product.countInStock > 0 ? colors.success : colors.danger }]}>
+            {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+          </Text>
+        </View>
+
+        <Text style={[styles.price, { color: colors.primary }]}>${product.price}</Text>
         
-        <Text style={styles.stock}>
-          Status: {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
-        </Text>
+        <Text style={[styles.descriptionHeader, { color: colors.text }]}>The Story</Text>
+        <Text style={[styles.description, { color: colors.text2 }]}>{product.description}</Text>
         
         <TouchableOpacity 
-          style={[styles.button, product.countInStock === 0 && styles.buttonDisabled]}
+          style={[
+            styles.button, 
+            product.countInStock === 0 && styles.buttonDisabled, 
+            { backgroundColor: colors.primary }
+          ]}
           disabled={product.countInStock === 0}
           onPress={handleAddToCart}
+          activeOpacity={0.9}
         >
-          <Text style={styles.buttonText}>Add to Cart</Text>
+          <Text style={styles.buttonText}>
+            {product.countInStock > 0 ? 'Add to Cart' : 'Sold Out'}
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -75,64 +173,122 @@ const ProductDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  imagePlaceholder: {
+  imageContainer: {
+    position: 'relative',
     width: '100%',
-    height: 300,
-    backgroundColor: '#e0e0e0',
+    height: 420,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  heartButton: {
+    position: "absolute",
+    top: 45,
+    right: 20,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 25,
+    elevation: 5,
   },
   detailsContainer: {
-    padding: 20,
-  },
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
+    padding: 24,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    marginTop: -30,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: -6 },
+    shadowRadius: 12,
+    elevation: 4,
   },
   brand: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 10,
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    marginBottom: 6,
+  },
+  name: {
+    fontSize: 28,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+    fontWeight: 'bold',
+    marginBottom: 12,
+    lineHeight: 34,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  ratingText: {
+    fontSize: 14,
+    marginLeft: 6,
+    fontWeight: '500',
+  },
+  badgeDivider: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#9CA3AF',
+    marginHorizontal: 10,
+  },
+  stockText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   price: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#208AEF',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   descriptionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
+    fontSize: 16,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 8,
   },
   description: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 15,
     lineHeight: 24,
-    marginBottom: 20,
-  },
-  stock: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
+    marginBottom: 32,
   },
   button: {
-    backgroundColor: '#208AEF',
-    padding: 15,
-    borderRadius: 8,
+    height: 56,
+    borderRadius: 28,
     alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 10,
+    elevation: 3,
   },
   buttonDisabled: {
-    backgroundColor: '#a0c4e4',
+    opacity: 0.5,
   },
   buttonText: {
     color: '#fff',

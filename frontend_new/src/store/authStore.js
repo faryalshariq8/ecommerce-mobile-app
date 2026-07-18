@@ -63,4 +63,20 @@ export const useAuthStore = create((set) => ({
       console.error('Failed to load user info', error);
     }
   },
+
+  updateProfile: async (payload) => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await api.put('/auth/profile', payload);
+      await AsyncStorage.setItem('userInfo', JSON.stringify(data));
+      set({ userInfo: data, isLoading: false });
+      return { success: true };
+    } catch (error) {
+      const message = error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+      set({ error: message, isLoading: false });
+      return { success: false, error: message };
+    }
+  },
 }));

@@ -1,14 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useThemeStore } from '../store/themeStore';
 
 const OrderSuccess = ({ route, navigation }) => {
   const { orderId } = route.params;
+  const { colors } = useThemeStore();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.bg }]}> 
       <Text style={styles.icon}>🎉</Text>
-      <Text style={styles.title}>Order Placed Successfully!</Text>
-      <Text style={styles.subtitle}>Your order ID is: {orderId}</Text>
+      <Text style={[styles.title, { color: colors.text }]}>Order Placed Successfully!</Text>
+      <Text style={[styles.subtitle, { color: colors.muted }]}>Your order ID is: {orderId}</Text>
       
       <TouchableOpacity 
         style={styles.button}

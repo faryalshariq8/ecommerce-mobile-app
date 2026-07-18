@@ -18,6 +18,10 @@ import AdminDashboard from '../screens/admin/AdminDashboard';
 import AdminProducts from '../screens/admin/AdminProducts';
 import AdminProductForm from '../screens/admin/AdminProductForm';
 import AdminOrders from '../screens/admin/AdminOrders';
+import Wishlist from "../screens/Wishlist";
+import ProfileEdit from "../screens/ProfileEdit";
+import ForgotPassword from "../screens/ForgotPassword";
+import AdminUsers from "../screens/admin/AdminUsers";
 
 const Stack = createNativeStackNavigator();
 
@@ -50,6 +54,9 @@ const AppNavigator = () => {
             <Stack.Screen name="AdminProducts" component={AdminProducts} options={{ headerShown: true, title: 'Products' }} />
             <Stack.Screen name="AdminProductForm" component={AdminProductForm} options={{ headerShown: true, title: 'Product Form' }} />
             <Stack.Screen name="AdminOrders" component={AdminOrders} options={{ headerShown: true, title: 'Orders' }} />
+            <Stack.Screen name="Wishlist" component={Wishlist} options={{ headerShown: true }} />
+            <Stack.Screen name="ProfileEdit" component={ProfileEdit} options={{ headerShown: true }} />
+            <Stack.Screen name="AdminUsers" component={AdminUsers} options={{ headerShown: true }} />
           </>
         ) : (
           <>
@@ -57,6 +64,7 @@ const AppNavigator = () => {
             <Stack.Screen name="Onboarding" component={Onboarding} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           </>
         )}
       </Stack.Navigator>

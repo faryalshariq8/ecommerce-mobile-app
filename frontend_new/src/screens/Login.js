@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Platform } from 'react-native';
 import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 
 const Login = ({ navigation }) => {
+  const { colors } = useThemeStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, isLoading, error } = useAuthStore();
@@ -14,14 +16,15 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}> 
+      <Text style={[styles.title, { color: colors.text }]}>Welcome Back</Text>
       
       {error && <Text style={styles.errorText}>{error}</Text>}
       
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, color: colors.text, borderColor: colors.border }]}
         placeholder="Email"
+        placeholderTextColor={colors.text2}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -29,25 +32,35 @@ const Login = ({ navigation }) => {
       />
       
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, color: colors.text, borderColor: colors.border }]}
         placeholder="Password"
+        placeholderTextColor={colors.text2}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
       
-      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
+      <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={handleLogin} disabled={isLoading}>
         {isLoading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={styles.buttonText}>Sign In</Text>
         )}
+      </TouchableOpacity>
+      <TouchableOpacity
+      onPress={() =>
+      navigation.navigate("ForgotPassword")
+      }
+      >
+      <Text>
+      Forgot Password?
+      </Text>
       </TouchableOpacity>
       
       <View style={styles.registerContainer}>
-        <Text style={styles.text}>Don't have an account? </Text>
+        <Text style={[styles.text, { color: colors.text2 }]}>Don't have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-          <Text style={styles.registerText}>Sign Up</Text>
+          <Text style={[styles.registerText, { color: colors.primary }]}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -58,29 +71,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 24,
   },
   title: {
-    fontSize: 32,
+    fontSize: 36,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 40,
     textAlign: 'center',
-    color: '#333',
   },
   input: {
-    backgroundColor: '#f5f5f5',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 15,
+    padding: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+    marginBottom: 16,
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#208AEF',
-    padding: 15,
-    borderRadius: 8,
+    padding: 16,
+    borderRadius: 28,
     alignItems: 'center',
     marginTop: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 10,
+    elevation: 2,
   },
   buttonText: {
     color: '#fff',
@@ -90,15 +106,13 @@ const styles = StyleSheet.create({
   registerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 24,
   },
   text: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 15,
   },
   registerText: {
-    fontSize: 16,
-    color: '#208AEF',
+    fontSize: 15,
     fontWeight: 'bold',
   },
   errorText: {

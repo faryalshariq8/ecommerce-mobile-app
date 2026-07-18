@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Image, Platform, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import api from '../services/api';
+import { useThemeStore } from '../store/themeStore';
 
 const Categories = ({ navigation }) => {
+  const { colors } = useThemeStore();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,68 +25,116 @@ const Categories = ({ navigation }) => {
 
   const renderCategory = ({ item }) => (
     <TouchableOpacity 
-      style={styles.categoryCard}
+      style={[
+        styles.categoryCard, 
+        { 
+          backgroundColor: colors.surface, 
+          borderColor: colors.border,
+          shadowColor: colors.shadow 
+        }
+      ]}
+      activeOpacity={0.9}
       onPress={() => navigation.navigate('CategoryProducts', { categoryId: item._id, name: item.name })}
     >
-      <View style={styles.categoryImagePlaceholder} />
-      <Text style={styles.categoryName}>{item.name}</Text>
+      {item.image ? (
+        <Image source={{ uri: item.image }} style={styles.categoryImage} resizeMode="cover" />
+      ) : (
+        <View style={[styles.categoryImagePlaceholder, { backgroundColor: colors.secondary }]} />
+      )}
+      <View style={styles.textContainer}>
+        <Text style={[styles.categoryName, { color: colors.text }]}>{item.name}</Text>
+        {item.description && (
+          <Text style={[styles.categoryDescription, { color: colors.text2 }]} numberOfLines={2}>
+            {item.description}
+          </Text>
+        )}
+      </View>
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Categories</Text>
-      {loading ? (
-        <ActivityIndicator size="large" color="#208AEF" />
-      ) : (
-        <FlatList
-          data={categories}
-          keyExtractor={(item) => item._id}
-          renderItem={renderCategory}
-          contentContainerStyle={styles.listContainer}
-        />
-      )}
-    </View>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}> 
+      <View style={[styles.container, { backgroundColor: colors.background }]}> 
+        <StatusBar barStyle={colors.background === '#FAF6EE' ? 'dark-content' : 'light-content'} />
+        <Text style={[styles.header, { color: colors.text }]}>Categories</Text>
+        {loading ? (
+          <View style={styles.center}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        ) : (
+          <FlatList
+            data={categories}
+            keyExtractor={(item) => item._id}
+            renderItem={renderCategory}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
-    fontSize: 24,
+    fontSize: 32,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
     fontWeight: 'bold',
-    margin: 15,
-    color: '#333',
+    marginHorizontal: 24,
+    marginTop: 12,
+    marginBottom: 20,
   },
   listContainer: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 24,
+    paddingBottom: 40,
   },
   categoryCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    marginBottom: 15,
-    borderRadius: 8,
-    padding: 10,
+    marginBottom: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 12,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.02,
+    shadowRadius: 6,
     elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
+  },
+  categoryImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 12,
+    marginRight: 16,
   },
   categoryImagePlaceholder: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 30,
-    marginRight: 15,
+    width: 64,
+    height: 64,
+    borderRadius: 12,
+    marginRight: 16,
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   categoryName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    marginBottom: 4,
+  },
+  categoryDescription: {
+    fontSize: 13,
+    lineHeight: 18,
   },
 });
 

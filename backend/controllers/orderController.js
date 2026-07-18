@@ -1,41 +1,70 @@
 const Order = require('../models/Order');
+const Cart = require('../models/Cart');
 
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
 const addOrderItems = async (req, res) => {
-  const {
-    orderItems,
-    shippingAddress,
-    paymentMethod,
-    itemsPrice,
-    taxPrice,
-    shippingPrice,
-    totalPrice,
-  } = req.body;
+  const { shippingAddress, paymentMethod } = req.body;
 
-  if (orderItems && orderItems.length === 0) {
-    res.status(400).json({ message: 'No order items' });
-    return;
-  } else {
-    try {
-      const order = new Order({
-        orderItems,
-        user: req.user._id,
-        shippingAddress,
-        paymentMethod,
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
-      });
+  try {
+    const cart = await Cart.findOne({ user: req.user._id }).populate('items.product');
 
-      const createdOrder = await order.save();
-
-      res.status(201).json(createdOrder);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!cart || !cart.items || cart.items.length === 0) {
+      res.status(400).json({ message: 'No items in cart' });
+      return;
     }
+
+    // Verify stock
+    for (const item of cart.items) {
+      if (item.product.countInStock < item.quantity) {
+        res.status(400).json({ message: `Not enough stock for ${item.product.name}. Available: ${item.product.countInStock}` });
+        return;
+      }
+    }
+
+    const orderItems = cart.items.map((item) => ({
+      name: item.product.name,
+      qty: item.quantity,
+      image: item.product.image,
+      price: item.product.price,
+      product: item.product._id,
+    }));
+
+    const itemsPrice = orderItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+    const taxPrice = Number((0.15 * itemsPrice).toFixed(2));
+    const shippingPrice = itemsPrice > 100 ? 0 : 10;
+    const totalPrice = Number((itemsPrice + taxPrice + shippingPrice).toFixed(2));
+
+    const order = new Order({
+      user: req.user._id,
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+      isPaid: false,
+      isDelivered: false,
+      status: 'Pending',
+    });
+
+    const createdOrder = await order.save();
+
+    // Deduct stock
+    for (const item of cart.items) {
+      item.product.countInStock -= item.quantity;
+      await item.product.save();
+    }
+
+    // Empty user's cart
+    cart.items = [];
+    await cart.save();
+
+    res.status(201).json(createdOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
