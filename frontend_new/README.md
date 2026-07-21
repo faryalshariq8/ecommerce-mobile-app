@@ -7,6 +7,41 @@ PosterHaus is a full-stack mobile e-commerce application developed using **React
 The application allows users to browse posters, manage a shopping cart and wishlist, place orders, and securely authenticate using JWT. It also includes an admin dashboard for managing products, categories, users, and orders.
 
 
+## Features
+
+- User Authentication
+- Browse Products
+- Search Products
+- Category Filtering
+- Wishlist
+- Shopping Cart
+- Order Placement
+- Order History
+- Profile Management
+- Admin Dashboard
+- Dark/Light Theme
+- Password Reset via Email (Resend)
+
+
+## Application Preview
+
+| Splash | Home | Entry |
+|--------|------|
+| ![](screenshots/splash.png) | ![](screenshots/home.png) | ![](screenshots/entry.png) |
+
+| Categories | Product Details |
+|------------|-----------------|
+| ![](screenshots/categories.png) | ![](screenshots/product-details.png) |
+
+| Cart | Wishlist |
+|------|-----------|
+| ![](screenshots/cart.png) | ![](screenshots/wishlist.png) |
+
+| Profile | Admin Dashboard |
+|---------|-----------------|
+| ![](screenshots/profile.png) | ![](screenshots/admin-dashboard.png) |
+
+
 ## Technologies Used
 
 ### Frontend
