@@ -35,13 +35,13 @@ https://github.com/faryalshariq8/ecommerce-mobile-app/releases
   
 ## Application Preview
 
-| Splash | Home | 
+| Splash | Entry | 
 |--------|------|
-| ![](Screenshots/splash.png) | ![](Screenshots/home.png) |
+| ![](Screenshots/splash.png) | ![](Screenshots/entry.png) |
 
-| Entry |
+| Home |
 |------|
- ![](Screenshots/entry.png) |
+ ![](Screenshots/home.png) |
  
 | Categories | Product Details |
 |------------|-----------------|
