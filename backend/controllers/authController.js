@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
+const sendEmail = require("../utils/sendEmail");
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -91,14 +92,46 @@ const updateUserProfile = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
+
   try {
     const user = await User.findOne({ email });
+
     if (!user) {
-      return res.status(404).json({ message: 'User with this email does not exist' });
+      return res
+        .status(404)
+        .json({ message: "User with this email does not exist." });
     }
-    res.json({ message: 'Password reset link has been successfully simulated and sent to your email!' });
+
+    const message = `
+Hello ${user.name},
+
+A password reset was requested for your PosterHaus account.
+
+Since this is a demo project, no reset link is generated.
+
+If you did not request this, simply ignore this email.
+
+PosterHaus Team
+`;
+
+    console.log("EMAIL_USER:", process.env.EMAIL_USER);
+    console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+
+    await sendEmail(
+      user.email,
+      "PosterHaus Password Reset",
+      message
+    );
+
+    res.json({
+      message: "Password reset email sent successfully.",
+    });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 

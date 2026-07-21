@@ -48,13 +48,9 @@ const Login = ({ navigation }) => {
         )}
       </TouchableOpacity>
       <TouchableOpacity
-      onPress={() =>
-      navigation.navigate("ForgotPassword")
-      }
+        onPress={() => navigation.navigate('ForgotPassword')}
       >
-      <Text>
-      Forgot Password?
-      </Text>
+        <Text style={[styles.forgotPasswordText, { color: colors.primary }]}>Forgot Password?</Text>
       </TouchableOpacity>
       
       <View style={styles.registerContainer}>
@@ -107,6 +103,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 24,
+  },
+  forgotPasswordText: {
+    fontSize: 15,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
+    textDecorationLine: 'underline',
   },
   text: {
     fontSize: 15,

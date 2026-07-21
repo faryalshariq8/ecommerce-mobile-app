@@ -14,22 +14,29 @@ export default function MainTabNavigator() {
             screenOptions={({ route }) => ({
                 headerShown: false,
                 tabBarStyle: {
-                    height: 70,
+                    height: 82,
                     backgroundColor: colors.surface,
                     borderTopWidth: 0,
                     elevation: 15,
-                    shadowOpacity: .1,
-                    position: 'absolute',
+                    shadowOpacity: 0.1,
+                    position: "absolute",
                     left: 15,
                     right: 15,
                     bottom: 15,
                     borderRadius: 20,
+
+                    paddingTop: 8,
+                    paddingBottom: 10,
                 },
                 tabBarActiveTintColor: colors.primary,
                 tabBarInactiveTintColor: colors.text2,
                 tabBarLabelStyle: {
                     fontSize: 12,
-                    marginBottom: 8,
+                    fontWeight: "600",
+                    marginBottom: 2,
+                },
+                tabBarItemStyle: {
+                    paddingVertical: 6,
                 },
                 tabBarIcon: ({ color, size }) => {
                     let icon;
@@ -51,7 +58,7 @@ export default function MainTabNavigator() {
                         <Ionicons
                             name={icon}
                             color={color}
-                            size={24}
+                            size={22}
                         />
                     );
                 }

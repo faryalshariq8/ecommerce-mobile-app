@@ -21,7 +21,18 @@ const Profile = ({ navigation }) => {
         style={[styles.row, { backgroundColor: colors.card }]}
         onPress={() => navigation.navigate('OrderHistory')}
       >
-        <Text style={[styles.rowText, { color: colors.text }]}>My Orders</Text>
+        <Text
+          style={[
+            styles.rowText,
+            {
+              color: colors.text,
+              flex: 1,
+              flexShrink: 1,
+            },
+          ]}
+        >
+          My Orders
+        </Text>
       </TouchableOpacity>
 
     <TouchableOpacity
@@ -36,7 +47,11 @@ const Profile = ({ navigation }) => {
     <Text
         style={[
             styles.rowText,
-            { color: colors.text }
+            {
+                color: colors.text,
+                flex: 1,
+                flexShrink: 1,
+            }
         ]}
     >
         My Wishlist
@@ -55,7 +70,11 @@ const Profile = ({ navigation }) => {
         <Text
             style={[
                 styles.rowText,
-                { color: colors.text }
+                {
+                    color: colors.text,
+                    flex: 1,
+                    flexShrink: 1,
+                }
             ]}
         >
             Edit Profile
@@ -63,7 +82,18 @@ const Profile = ({ navigation }) => {
     </TouchableOpacity>
 
       <View style={[styles.row, { backgroundColor: colors.card }]}>
-        <Text style={[styles.rowText, { color: colors.text }]}>Dark Mode</Text>
+        <Text
+          style={[
+            styles.rowText,
+            {
+              color: colors.text,
+              flex: 1,
+              flexShrink: 1,
+            },
+          ]}
+        >
+          Dark Mode
+        </Text>
         <Switch value={mode === 'dark'} onValueChange={toggle} />
       </View>
 
@@ -72,7 +102,18 @@ const Profile = ({ navigation }) => {
           style={[styles.row, { backgroundColor: colors.card }]}
           onPress={() => navigation.navigate('AdminDashboard')}
         >
-          <Text style={[styles.rowText, { color: colors.primary }]}>Admin Dashboard</Text>
+          <Text
+            style={[
+              styles.rowText,
+              {
+                color: colors.primary,
+                flex: 1,
+                flexShrink: 1,
+              },
+            ]}
+          >
+            Admin Dashboard
+          </Text>
         </TouchableOpacity>
       )}
 
@@ -96,8 +137,12 @@ const styles = StyleSheet.create({
   },
   card: { padding: 20, borderRadius: 10, marginBottom: 20 },
   name: { fontSize: 22, fontWeight: 'bold' },
-  row: { padding: 16, borderRadius: 8, marginBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  rowText: { fontSize: 16 },
+  row: { padding: 16, borderRadius: 8, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  rowText: {
+    fontSize: 15,
+    flex: 1,
+    flexShrink: 1,
+  },
   logout: { padding: 15, borderRadius: 8, alignItems: 'center', marginTop: 30 },
   logoutText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
 });
