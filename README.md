@@ -23,23 +23,37 @@ The application allows users to browse posters, manage a shopping cart and wishl
 - Password Reset via Email (Resend)
 
 
+## APK
+
+The Android APK can be downloaded from the **Releases** section of this repository.
+
+Latest release:
+- PosterHaus v1.0
+Download APK:
+https://github.com/faryalshariq8/ecommerce-mobile-app/releases
+
+  
 ## Application Preview
 
-| Splash | Home | Entry |
+| Splash | Home | 
 |--------|------|
-| ![](screenshots/splash.png) | ![](screenshots/home.png) | ![](screenshots/entry.png) |
+| ![](Screenshots/splash.png) | ![](Screenshots/home.png) |
 
+| Entry |
+|------|
+ ![](Screenshots/entry.png) |
+ 
 | Categories | Product Details |
 |------------|-----------------|
-| ![](screenshots/categories.png) | ![](screenshots/product-details.png) |
+| ![](Screenshots/categories.png) | ![](Screenshots/product-details.png) |
 
 | Cart | Wishlist |
 |------|-----------|
-| ![](screenshots/cart.png) | ![](screenshots/wishlist.png) |
+| ![](Screenshots/cart.png) | ![](Screenshots/wishlist.png) |
 
 | Profile | Admin Dashboard |
 |---------|-----------------|
-| ![](screenshots/profile.png) | ![](screenshots/admin-dashboard.png) |
+| ![](Screenshots/profile.png) | ![](Screenshots/admin-dashboard.png) |
 
 
 ## Technologies Used
