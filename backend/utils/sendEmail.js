@@ -7,6 +7,7 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 });
+//push to git
 
 transporter.verify(function (error, success) {
   if (error) {
