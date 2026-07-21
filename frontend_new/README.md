@@ -1,56 +1,189 @@
-# Welcome to your Expo app 👋
+# PosterHaus – Mobile E-Commerce Application
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Project Overview
 
-## Get started
+PosterHaus is a full-stack mobile e-commerce application developed using **React Native (Expo)** for the frontend and **Node.js, Express.js, and MongoDB** for the backend.
 
-1. Install dependencies
+The application allows users to browse posters, manage a shopping cart and wishlist, place orders, and securely authenticate using JWT. It also includes an admin dashboard for managing products, categories, users, and orders.
 
-   ```bash
-   npm install
-   ```
 
-2. Start the app
+## Technologies Used
 
-   ```bash
-   npx expo start
-   ```
+### Frontend
 
-In the output, you'll find options to open the app in a
+* React Native (Expo)
+* React Navigation
+* Axios
+* Zustand (State Management)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Backend
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+* Node.js
+* Express.js
+* MongoDB Atlas
+* Mongoose
+* JWT Authentication
+* Cloudinary (Image Storage)
+* Stripe (Payment Integration)
+* Resend (Password Reset Emails)
 
-## Get a fresh project
 
-When you're ready, run:
+## Features
 
-```bash
-npm run reset-project
+### User
+
+* User Registration
+* User Login
+* JWT Authentication
+* Browse Products
+* Search Products
+* Browse Categories
+* Wishlist
+* Shopping Cart
+* Checkout
+* Order History
+* Profile Management
+* Dark / Light Theme
+* Forgot Password Email
+
+### Admin
+
+* Dashboard
+* Product Management
+* Category Management
+* User Management
+* Order Management
+
+
+## Project Structure
+
+```
+backend/
+    controllers/
+    models/
+    routes/
+    middleware/
+    config/
+    utils/
+
+frontend_new/
+    src/
+        screens/
+        components/
+        navigation/
+        services/
+        store/
+        constants/
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-### Other setup steps
+## Setup Instructions
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+### 1. Clone Repository
 
-## Learn more
+```
+git clone <repository-link>
+```
 
-To learn more about developing your project with Expo, look at the following resources:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 2. Backend Setup
 
-## Join the community
+Navigate to backend folder:
 
-Join our community of developers creating universal apps.
+```
+cd backend
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Install dependencies:
+
+```
+npm install
+```
+
+Create a `.env` file containing:
+
+```
+MONGO_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_jwt_secret
+
+STRIPE_SECRET_KEY=your_stripe_secret
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+RESEND_API_KEY=your_resend_api_key
+```
+
+Run backend:
+
+```
+npm run dev
+```
+
+or
+
+```
+npm start
+```
+
+
+### 3. Frontend Setup
+
+Navigate to frontend:
+
+```
+cd frontend_new
+```
+
+Install dependencies:
+
+```
+npm install
+```
+
+Update API URL inside:
+
+```
+src/services/api.js
+```
+
+Run application:
+
+```
+npx expo start
+```
+
+or
+
+```
+npx expo run:android
+```
+
+
+## APK
+
+A release APK is included in the repository for testing on Android devices.
+
+
+## Test Account
+
+Admin:
+
+```
+Email:
+faryalshariq8@gmail.com
+
+Password:
+fari123
+```
+
+User:
+You can create your own account.
+
+## Developed By
+
+Faryal Shariq
+
+BS Computer Science Final Year Project
